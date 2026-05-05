@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册 - 聊天室</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    form { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px; }
+    input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+    button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .msg { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
+    a { color: #007bff; }
+  </style>
+</head>
+<body>
+  <form id="registerForm">
+    <h2>注册聊天室</h2>
+    <input type="text" id="username" placeholder="用户名" required>
+    <input type="password" id="password" placeholder="密码" required>
+    <input type="text" id="inviteCode" placeholder="邀请码" required>
+    <button type="submit">注册</button>
+    <div id="msg" class="msg"></div>
+    <p style="text-align:center; margin-top:15px;">已有账号？<a href="login.html">登录</a></p>
+  </form>
 
+  <script>
+    const form = document.getElementById('registerForm');
+    const msgDiv = document.getElementById('msg');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const inviteCode = document.getElementById('inviteCode').value;
+
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, inviteCode })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        msgDiv.style.color = 'green';
+        msgDiv.textContent = '注册成功！即将跳转...';
+        setTimeout(() => { location.href = 'login.html'; }, 1500);
+      } else {
+        msgDiv.textContent = data.error || '注册失败';
+      }
+    });
+  </script>
+</body>
+</html>
